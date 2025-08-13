@@ -179,23 +179,44 @@ def plot_kline_with_extremes(df_etf, etf_code_display, peak_dist, peak_prom):
 
     # --- 寻找并标记极值点 ---
     close_prices = df_etf['Close']
-    if len(close_prices) > peak_dist : # 确保数据足够进行find_peaks
+    if len(close_prices) > peak_dist:  # 确保数据足够进行find_peaks
         # 极大值 (波峰)
         max_locs, _ = find_peaks(close_prices, distance=peak_dist, prominence=peak_prom)
         if len(max_locs) > 0:
-            fig.add_trace(go.Scatter(x=df_etf.index[max_locs], y=close_prices.iloc[max_locs],
-                                     mode='markers', name='局部高点',
-                                     marker=dict(color='blue', size=10, symbol='circle-open', # MODIFIED: 空心圆圈
-                                                 line=dict(width=2, color='DarkSlateGrey'))), # 可选：设置边框
-                          row=1, col=1)
+            fig.add_trace(go.Scatter(
+                x=df_etf.index[max_locs], 
+                y=close_prices.iloc[max_locs],
+                mode='markers', 
+                name='局部高点',
+                marker=dict(
+                    color='rgba(255, 127, 80, 0.0)',  # 核心：设置填充色为完全透明
+                    size=12,                           # 稍微增大尺寸以突出边框
+                    symbol='circle',                   # 使用实心圆符号
+                    line=dict(
+                        width=2,                       # 边框宽度
+                        color='orangered'              # 边框颜色：亮眼的橙红色
+                    )
+                )
+            ), row=1, col=1)
+
         # 极小值 (波谷)
-        min_locs, _ = find_peaks(-close_prices, distance=peak_dist, prominence=peak_prom) # 注意对负数序列找峰值
+        min_locs, _ = find_peaks(-close_prices, distance=peak_dist, prominence=peak_prom)
         if len(min_locs) > 0:
-            fig.add_trace(go.Scatter(x=df_etf.index[min_locs], y=close_prices.iloc[min_locs],
-                                     mode='markers', name='局部低点',
-                                     marker=dict(color='white', size=10, symbol='circle-open', # MODIFIED: 空心圆圈
-                                                 line=dict(width=2, color='DarkSlateGrey'))), # 可选：设置边框
-                          row=1, col=1)
+            fig.add_trace(go.Scatter(
+                x=df_etf.index[min_locs], 
+                y=close_prices.iloc[min_locs],
+                mode='markers', 
+                name='局部低点',
+                marker=dict(
+                    color='rgba(0, 206, 209, 0.0)',   # 核心：设置填充色为完全透明
+                    size=12,                           # 稍微增大尺寸以突出边框
+                    symbol='circle',                   # 使用实心圆符号
+                    line=dict(
+                        width=2,                       # 边框宽度
+                        color='darkturquoise'          # 边框颜色：明亮的青色
+                    )
+                )
+            ), row=1, col=1)
 
     fig.update_layout(
         title_text=f"{etf_code_display} 日K线图",
